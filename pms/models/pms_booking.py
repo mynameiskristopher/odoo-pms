@@ -72,7 +72,7 @@ class PmsBooking(models.Model):
         ('checked_in', 'Checked In'),
         ('checked_out', 'Checked Out'),
         ('cancelled', 'Cancelled'),
-    ], string='Status', default='draft', required=True, copy=False, tracking=True)
+    ], string='Status', default='draft', required=True, copy=False)
 
     number_of_nights = fields.Integer(
         string='Nights',

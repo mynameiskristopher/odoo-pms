@@ -71,7 +71,7 @@
                 <field name="name"/>
                 <field name="property_type"/>
                 <filter string="Allows Pets" name="pets_allowed" domain="[('pets_allowed', '=', True)]"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter string="Property Type" name="group_by_type" context="{'group_by': 'property_type'}"/>
                 </group>
             </search>

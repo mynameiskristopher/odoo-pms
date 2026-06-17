@@ -36,10 +36,10 @@
         <field name="arch" type="xml">
             <form string="Booking">
                 <header>
-                    <button name="action_confirm" string="Confirm Booking" type="object" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
-                    <button name="action_checkin" string="Check In" type="object" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'confirmed')]}"/>
-                    <button name="action_checkout" string="Check Out" type="object" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'checked_in')]}"/>
-                    <button name="action_cancel" string="Cancel Booking" type="object" attrs="{'invisible': [('state', 'in', ('checked_out', 'cancelled'))]}"/>
+                    <button name="action_confirm" string="Confirm Booking" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_checkin" string="Check In" type="object" class="oe_highlight" invisible="state != 'confirmed'"/>
+                    <button name="action_checkout" string="Check Out" type="object" class="oe_highlight" invisible="state != 'checked_in'"/>
+                    <button name="action_cancel" string="Cancel Booking" type="object" invisible="state in ('checked_out', 'cancelled')"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,checked_in,checked_out,cancelled"/>
                 </header>
                 <sheet>
@@ -86,7 +86,7 @@
                 <filter string="Historical (Checked Out)" name="checked_out" domain="[('state', '=', 'checked_out')]"/>
                 <separator/>
                 <filter string="Active Bookings" name="active_bookings" domain="[('state', 'in', ('confirmed', 'checked_in'))]"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter string="Property" name="group_by_property" context="{'group_by': 'property_id'}"/>
                     <filter string="Status" name="group_by_state" context="{'group_by': 'state'}"/>
                     <filter string="Customer" name="group_by_partner" context="{'group_by': 'partner_id'}"/>
