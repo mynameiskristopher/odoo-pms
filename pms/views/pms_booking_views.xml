@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Sequence for Booking References -->
+    <record id="seq_pms_booking" model="ir.sequence">
+        <name>Vacation Rental Booking Sequence</name>
+        <code>pms.booking</code>
+        <prefix>BKP/</prefix>
+        <padding>5</padding>
+        <company_id eval="False"/>
+    </record>
+
+    <!-- Tree View -->
+    <record id="view_pms_booking_tree" model="ir.ui.view">
+        <name>pms.booking.tree</name>
+        <model>pms.booking</model>
+        <arch type="xml">
+            <tree string="Bookings" decoration-info="state == 'draft'" decoration-success="state in ('confirmed', 'checked_in')" decoration-muted="state in ('checked_out', 'cancelled')">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="guest_id"/>
+                <field name="property_id"/>
+                <field name="checkin_date"/>
+                <field name="checkout_date"/>
+                <field name="number_of_nights"/>
+                <field name="total_price" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-success="state in ('confirmed', 'checked_in')" decoration-muted="state in ('checked_out', 'cancelled')"/>
+            </tree>
+        </arch>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_pms_booking_form" model="ir.ui.view">
+        <name>pms.booking.form</name>
+        <model>pms.booking</model>
+        <arch type="xml">
+            <form string="Booking">
+                <header>
+                    <button name="action_confirm" string="Confirm Booking" type="object" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                    <button name="action_checkin" string="Check In" type="object" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'confirmed')]}"/>
+                    <button name="action_checkout" string="Check Out" type="object" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'checked_in')]}"/>
+                    <button name="action_cancel" string="Cancel Booking" type="object" attrs="{'invisible': [('state', 'in', ('checked_out', 'cancelled'))]}"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,checked_in,checked_out,cancelled"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Reservation Details">
+                            <field name="property_id" options="{'no_create': True}"/>
+                            <field name="checkin_date"/>
+                            <field name="checkout_date"/>
+                            <field name="number_of_nights" readonly="1"/>
+                        </group>
+                        <group string="Guest Information">
+                            <field name="partner_id"/>
+                            <field name="guest_id"/>
+                            <field name="number_of_guests"/>
+                            <field name="total_price" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Sales Integration" name="sales_integration">
+                        <field name="sale_line_id" readonly="1" groups="base.group_no_one"/>
+                    </group>
+                </sheet>
+            </form>
+        </arch>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_pms_booking_search" model="ir.ui.view">
+        <name>pms.booking.search</name>
+        <model>pms.booking</model>
+        <arch type="xml">
+            <search string="Search Bookings">
+                <field name="name"/>
+                <field name="partner_id" string="Customer"/>
+                <field name="guest_id" string="Guest"/>
+                <field name="property_id" string="Property"/>
+                <filter string="Enquiries / Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Confirmed Stays" name="confirmed" domain="[('state', '=', 'confirmed')]"/>
+                <filter string="Currently Checked In" name="checked_in" domain="[('state', '=', 'checked_in')]"/>
+                <filter string="Historical (Checked Out)" name="checked_out" domain="[('state', '=', 'checked_out')]"/>
+                <separator/>
+                <filter string="Active Bookings" name="active_bookings" domain="[('state', 'in', ('confirmed', 'checked_in'))]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Property" name="group_by_property" context="{'group_by': 'property_id'}"/>
+                    <filter string="Status" name="group_by_state" context="{'group_by': 'state'}"/>
+                    <filter string="Customer" name="group_by_partner" context="{'group_by': 'partner_id'}"/>
+                </group>
+            </search>
+        </arch>
+    </record>
+
+    <!-- Action -->
+    <record id="action_pms_booking" model="ir.actions.act_window">
+        <name>Bookings</name>
+        <type>ir.actions.act_window</type>
+        <res_model>pms.booking</res_model>
+        <view_mode>tree,form</view_mode>
+        <search_view_id ref="view_pms_booking_search"/>
+        <help type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Manage your vacation rental bookings here!
+            </p>
+            <p>
+                Link bookings directly to customers, specify properties, track check-ins/check-outs, and integrate with sales.
+            </p>
+        </help>
+    </record>
+
+    <!-- Menu Item (Top-Level: Property Management was already declared in pms_property_views.xml) -->
+    <menuitem id="menu_pms_bookings_cat"
+              name="Bookings"
+              parent="menu_pms_root"
+              sequence="20"/>
+
+    <menuitem id="menu_pms_booking"
+              name="All Bookings"
+              parent="menu_pms_bookings_cat"
+              action="action_pms_booking"
+              sequence="10"/>
+
+</odoo>

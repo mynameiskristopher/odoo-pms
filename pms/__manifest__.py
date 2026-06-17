@@ -15,10 +15,12 @@ seamlessly with Odoo's product templates.
     'depends': [
         'base',
         'product',
+        'sale',
     ],
     'data': [
         'security/ir.model.access.csv',
         'views/pms_property_views.xml',
+        'views/pms_booking_views.xml',
     ],
     'installable': True,
     'application': True,
