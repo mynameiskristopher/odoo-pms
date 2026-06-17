@@ -3,9 +3,9 @@
 
     <!-- Tree View -->
     <record id="view_pms_property_tree" model="ir.ui.view">
-        <name>pms.property.tree</name>
-        <model>pms.property</model>
-        <arch type="xml">
+        <field name="name">pms.property.tree</field>
+        <field name="model">pms.property</field>
+        <field name="arch" type="xml">
             <tree string="Properties">
                 <field name="name"/>
                 <field name="property_type"/>
@@ -16,14 +16,14 @@
                 <field name="pets_allowed"/>
                 <field name="list_price" string="Rent Price"/>
             </tree>
-        </arch>
+        </field>
     </record>
 
     <!-- Form View -->
     <record id="view_pms_property_form" model="ir.ui.view">
-        <name>pms.property.form</name>
-        <model>pms.property</model>
-        <arch type="xml">
+        <field name="name">pms.property.form</field>
+        <field name="model">pms.property</field>
+        <field name="arch" type="xml">
             <form string="Property">
                 <sheet>
                     <div class="oe_title">
@@ -59,14 +59,14 @@
                     </notebook>
                 </sheet>
             </form>
-        </arch>
+        </field>
     </record>
 
     <!-- Search View -->
     <record id="view_pms_property_search" model="ir.ui.view">
-        <name>pms.property.search</name>
-        <model>pms.property</model>
-        <arch type="xml">
+        <field name="name">pms.property.search</field>
+        <field name="model">pms.property</field>
+        <field name="arch" type="xml">
             <search string="Search Properties">
                 <field name="name"/>
                 <field name="property_type"/>
@@ -75,24 +75,24 @@
                     <filter string="Property Type" name="group_by_type" context="{'group_by': 'property_type'}"/>
                 </group>
             </search>
-        </arch>
+        </field>
     </record>
 
     <!-- Action -->
     <record id="action_pms_property" model="ir.actions.act_window">
-        <name>Properties</name>
-        <type>ir.actions.act_window</type>
-        <res_model>pms.property</res_model>
-        <view_mode>tree,form</view_mode>
-        <search_view_id ref="view_pms_property_search"/>
-        <help type="html">
+        <field name="name">Properties</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">pms.property</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_pms_property_search"/>
+        <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Create your first Vacation Rental Property!
             </p>
             <p>
                 Manage check-in times, room layouts, and occupancy settings for vacation rentals.
             </p>
-        </help>
+        </field>
     </record>
 
     <!-- Menu Structure -->

@@ -3,18 +3,18 @@
 
     <!-- Sequence for Booking References -->
     <record id="seq_pms_booking" model="ir.sequence">
-        <name>Vacation Rental Booking Sequence</name>
-        <code>pms.booking</code>
-        <prefix>BKP/</prefix>
-        <padding>5</padding>
-        <company_id eval="False"/>
+        <field name="name">Vacation Rental Booking Sequence</field>
+        <field name="code">pms.booking</field>
+        <field name="prefix">BKP/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
     </record>
 
     <!-- Tree View -->
     <record id="view_pms_booking_tree" model="ir.ui.view">
-        <name>pms.booking.tree</name>
-        <model>pms.booking</model>
-        <arch type="xml">
+        <field name="name">pms.booking.tree</field>
+        <field name="model">pms.booking</field>
+        <field name="arch" type="xml">
             <tree string="Bookings" decoration-info="state == 'draft'" decoration-success="state in ('confirmed', 'checked_in')" decoration-muted="state in ('checked_out', 'cancelled')">
                 <field name="name"/>
                 <field name="partner_id"/>
@@ -26,14 +26,14 @@
                 <field name="total_price" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                 <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-success="state in ('confirmed', 'checked_in')" decoration-muted="state in ('checked_out', 'cancelled')"/>
             </tree>
-        </arch>
+        </field>
     </record>
 
     <!-- Form View -->
     <record id="view_pms_booking_form" model="ir.ui.view">
-        <name>pms.booking.form</name>
-        <model>pms.booking</model>
-        <arch type="xml">
+        <field name="name">pms.booking.form</field>
+        <field name="model">pms.booking</field>
+        <field name="arch" type="xml">
             <form string="Booking">
                 <header>
                     <button name="action_confirm" string="Confirm Booking" type="object" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
@@ -67,14 +67,14 @@
                     </group>
                 </sheet>
             </form>
-        </arch>
+        </field>
     </record>
 
     <!-- Search View -->
     <record id="view_pms_booking_search" model="ir.ui.view">
-        <name>pms.booking.search</name>
-        <model>pms.booking</model>
-        <arch type="xml">
+        <field name="name">pms.booking.search</field>
+        <field name="model">pms.booking</field>
+        <field name="arch" type="xml">
             <search string="Search Bookings">
                 <field name="name"/>
                 <field name="partner_id" string="Customer"/>
@@ -92,24 +92,24 @@
                     <filter string="Customer" name="group_by_partner" context="{'group_by': 'partner_id'}"/>
                 </group>
             </search>
-        </arch>
+        </field>
     </record>
 
     <!-- Action -->
     <record id="action_pms_booking" model="ir.actions.act_window">
-        <name>Bookings</name>
-        <type>ir.actions.act_window</type>
-        <res_model>pms.booking</res_model>
-        <view_mode>tree,form</view_mode>
-        <search_view_id ref="view_pms_booking_search"/>
-        <help type="html">
+        <field name="name">Bookings</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">pms.booking</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_pms_booking_search"/>
+        <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Manage your vacation rental bookings here!
             </p>
             <p>
                 Link bookings directly to customers, specify properties, track check-ins/check-outs, and integrate with sales.
             </p>
-        </help>
+        </field>
     </record>
 
     <!-- Menu Item (Top-Level: Property Management was already declared in pms_property_views.xml) -->
