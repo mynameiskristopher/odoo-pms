@@ -33,32 +33,68 @@
                         <h1>
                             <field name="name" placeholder="e.g. Cozy Beachfront Villa"/>
                         </h1>
+                        <h2>
+                            <field name="headline" placeholder="e.g. Beautiful beachfront condo with stunning sunset views"/>
+                        </h2>
                     </div>
                     <group>
                         <group string="Property Specifications">
                             <field name="property_type"/>
+                            <field name="short_name" placeholder="e.g. Beachfront Villa"/>
+                            <field name="unit_code" placeholder="e.g. VILLA-A"/>
                             <field name="number_of_rooms"/>
+                            <field name="bedrooms"/>
                             <field name="number_of_floors"/>
                             <field name="square_footage"/>
                             <field name="max_occupancy"/>
                             <field name="pets_allowed"/>
+                            <label for="full_bathrooms" string="Bathrooms"/>
+                            <div class="o_row">
+                                <span>Full:</span>
+                                <field name="full_bathrooms" class="oe_inline"/>
+                                <span>3/4:</span>
+                                <field name="three_quarter_bathrooms" class="oe_inline"/>
+                                <span>Half:</span>
+                                <field name="half_bathrooms" class="oe_inline"/>
+                            </div>
                         </group>
-                        <group string="Logistics &amp; Location">
+                        <group string="Logistics &amp; Rent">
                             <field name="checkin_time" widget="float_time"/>
                             <field name="checkout_time" widget="float_time"/>
-                            <label for="latitude" string="Geo Coordinates"/>
-                            <div class="o_row">
-                                <span>Lat:</span>
-                                <field name="latitude" class="oe_inline"/>
-                                <span>Long:</span>
-                                <field name="longitude" class="oe_inline"/>
-                            </div>
                             <field name="list_price" string="Default Daily Rent"/>
                         </group>
                     </group>
                     <notebook>
                         <page string="Description" name="description">
-                            <field name="description" placeholder="Provide a detailed description of the vacation rental..."/>
+                            <group>
+                                <field name="short_description" placeholder="A short teaser/summary of the property..."/>
+                                <field name="description" placeholder="Provide a detailed description of the vacation rental..."/>
+                            </group>
+                        </page>
+                        <page string="Location &amp; Compliance" name="location_compliance">
+                            <group>
+                                <group string="Address">
+                                    <field name="street" placeholder="Street Address..."/>
+                                    <field name="street2" placeholder="Extended Address..."/>
+                                    <field name="city" placeholder="City"/>
+                                    <field name="state_id" options="{'no_open': True, 'no_quick_create': True}"/>
+                                    <field name="zip" placeholder="Postal Code"/>
+                                    <field name="country_id" options="{'no_open': True, 'no_quick_create': True}"/>
+                                </group>
+                                <group string="Coordinates &amp; Compliance">
+                                    <label for="latitude" string="Geo Coordinates"/>
+                                    <div class="o_row">
+                                        <span>Lat:</span>
+                                        <field name="latitude" class="oe_inline"/>
+                                        <span>Long:</span>
+                                        <field name="longitude" class="oe_inline"/>
+                                    </div>
+                                    <field name="municipality_id" placeholder="STR License / Permit ID..."/>
+                                </group>
+                            </group>
+                            <group string="Check-in Directions">
+                                <field name="directions" placeholder="Driving directions, access codes, entry instructions..."/>
+                            </group>
                         </page>
                     </notebook>
                 </sheet>

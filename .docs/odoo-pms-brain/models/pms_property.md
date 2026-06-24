@@ -19,6 +19,23 @@ The `pms.property` model maps directly to Schema.org's **`VacationRental`** clas
 | `lodgingType` / Type| `property_type` | `Selection` | Category of property (house, apartment, cabin, villa) |
 | `geo` (latitude) | `latitude` | `Float` | Latitude coordinate |
 | `geo` (longitude) | `longitude` | `Float` | Longitude coordinate |
+| `alternateName` | `short_name` | `Char` | A shorter name for internal use or sync |
+| `identifier` | `unit_code` | `Char` | Unique identifier code for the property unit |
+| `slogan` | `headline` | `Char` | Catchy headline/tagline for marketing listings |
+| `description` (teaser) | `short_description` | `Text` | Brief summary/teaser of the property |
+| - | `directions` | `Text` | Access directions or instructions to reach the property |
+| `address.streetAddress` | `street` | `Char` | Street Address |
+| `address.streetAddress` (ext) | `street2` | `Char` | Extended Address |
+| `address.addressLocality` | `city` | `Char` | City |
+| `address.addressRegion` | `state_id` | `Many2one` | State (references `res.country.state`) |
+| `address.postalCode` | `zip` | `Char` | Postal Code (ZIP) |
+| `address.addressCountry` | `country_id` | `Many2one` | Country (references `res.country`) |
+| `numberOfBathroomsTotal` (full) | `full_bathrooms` | `Integer` | Number of full bathrooms (toilet, sink, shower/tub) |
+| `numberOfBathroomsTotal` (3/4) | `three_quarter_bathrooms` | `Integer` | Number of three-quarter bathrooms (toilet, sink, shower) |
+| `numberOfBathroomsTotal` (half) | `half_bathrooms` | `Integer` | Number of half bathrooms (toilet, sink) |
+| `numberOfBedrooms` | `bedrooms` | `Integer` | Number of bedrooms |
+| `permitNo` | `municipality_id` | `Char` | Local municipality ID, license, or permit |
+
 
 ## Inheritance Design Decision: Delegation Inheritance (`_inherits`)
 

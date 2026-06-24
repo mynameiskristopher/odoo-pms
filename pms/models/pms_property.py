@@ -72,3 +72,84 @@ class PmsProperty(models.Model):
         digits=(10, 7),
         help='GPS Longitude'
     )
+
+    short_name = fields.Char(
+        string='Short Name',
+        help='A shorter name for internal use or sync'
+    )
+    
+    unit_code = fields.Char(
+        string='Unit Code',
+        help='Unique identifier code for the property unit'
+    )
+    
+    headline = fields.Char(
+        string='Headline',
+        help='Catchy headline/tagline for marketing listings'
+    )
+    
+    short_description = fields.Text(
+        string='Short Description',
+        help='Brief summary/teaser of the property'
+    )
+    
+    directions = fields.Text(
+        string='Directions',
+        help='Access directions or instructions to reach the property'
+    )
+    
+    street = fields.Char(
+        string='Street Address'
+    )
+    
+    street2 = fields.Char(
+        string='Extended Address'
+    )
+    
+    city = fields.Char(
+        string='City'
+    )
+    
+    state_id = fields.Many2one(
+        'res.country.state',
+        string='State',
+        domain="[('country_id', '=?', country_id)]"
+    )
+    
+    zip = fields.Char(
+        string='Postal Code'
+    )
+    
+    country_id = fields.Many2one(
+        'res.country',
+        string='Country'
+    )
+    
+    full_bathrooms = fields.Integer(
+        string='Full Bathrooms',
+        default=0,
+        help='Number of full bathrooms (toilet, sink, shower/tub)'
+    )
+    
+    three_quarter_bathrooms = fields.Integer(
+        string='3/4 Bathrooms',
+        default=0,
+        help='Number of three-quarter bathrooms (toilet, sink, shower)'
+    )
+    
+    half_bathrooms = fields.Integer(
+        string='Half Bathrooms',
+        default=0,
+        help='Number of half bathrooms (toilet, sink)'
+    )
+    
+    bedrooms = fields.Integer(
+        string='Bedrooms',
+        default=0,
+        help='Number of bedrooms'
+    )
+    
+    municipality_id = fields.Char(
+        string='Municipality ID',
+        help='Local tax, permit, license, or municipality ID for STR compliance'
+    )
