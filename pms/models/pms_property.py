@@ -36,6 +36,18 @@ class PmsProperty(models.Model):
         help='Total number of rooms'
     )
     
+    number_of_floors = fields.Integer(
+        string='Number of Floors',
+        default=1,
+        help='Total number of floors'
+    )
+    
+    square_footage = fields.Float(
+        string='Square Footage',
+        default=0.0,
+        help='Total square footage of the property'
+    )
+    
     max_occupancy = fields.Integer(
         string='Max Occupancy',
         default=1,

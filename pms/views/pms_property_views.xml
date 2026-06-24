@@ -11,6 +11,8 @@
                 <field name="property_type"/>
                 <field name="max_occupancy"/>
                 <field name="number_of_rooms"/>
+                <field name="number_of_floors"/>
+                <field name="square_footage"/>
                 <field name="checkin_time" widget="float_time"/>
                 <field name="checkout_time" widget="float_time"/>
                 <field name="pets_allowed"/>
@@ -36,6 +38,8 @@
                         <group string="Property Specifications">
                             <field name="property_type"/>
                             <field name="number_of_rooms"/>
+                            <field name="number_of_floors"/>
+                            <field name="square_footage"/>
                             <field name="max_occupancy"/>
                             <field name="pets_allowed"/>
                         </group>
