@@ -17,8 +17,8 @@ Before making architectural decisions, refactoring, or asking the user for conte
 ## Documentation Mandate (Definition of Done)
 Every time you create a new module, refactor logic, introduce a new database model, or solve a complex bug, you MUST update the knowledge base.
 
-1. **Changelog Tracking:** Maintain a changelog for the current day `~/odoo-pms-brain/changelog/YYYY-MM-DD.md` file. Append a brief, dated entry for every significant architectural change you make. (where YYYY is the four digit year, MM is the two digit month, and DD is the two digit day)
-2. **Architecture Notes:** When creating new Odoo models (e.g., `pms.property`), create or update a corresponding markdown file in `~/odoo-pms-brain/models/` explaining the schema, relationships, and business logic.
+1. **Changelog Tracking:** Maintain a changelog for the current day `.docs/odoo-pms-brain/changelog/YYYY-MM-DD.md` file. Append a brief, dated entry for every significant architectural change you make. (where YYYY is the four digit year, MM is the two digit month, and DD is the two digit day)
+2. **Architecture Notes:** When creating new Odoo models (e.g., `pms.property`), create or update a corresponding markdown file in `.docs/odoo-pms-brain/models/` explaining the schema, relationships, and business logic.
 3. **Execution Order:** Always write the tracking documentation *before* or *simultaneously* with completing the code task. Do not wait for the user to ask you to document it.
 
 ## 💻 Coding Standards & Odoo Nuances
