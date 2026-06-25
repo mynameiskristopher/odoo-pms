@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ─── Tag List (for Many2many widget) ──────────────────────────── -->
+    <record id="view_pms_owner_tag_list" model="ir.ui.view">
+        <field name="name">pms.owner.tag.list</field>
+        <field name="model">pms.owner.tag</field>
+        <field name="arch" type="xml">
+            <list string="Owner Tags">
+                <field name="name"/>
+                <field name="color"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_pms_owner_tag_form" model="ir.ui.view">
+        <field name="name">pms.owner.tag.form</field>
+        <field name="model">pms.owner.tag</field>
+        <field name="arch" type="xml">
+            <form string="Owner Tag">
+                <group>
+                    <field name="name"/>
+                    <field name="color"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <!-- ─── Owner List View ──────────────────────────────────────────── -->
+    <record id="view_pms_owner_list" model="ir.ui.view">
+        <field name="name">pms.owner.list</field>
+        <field name="model">pms.owner</field>
+        <field name="arch" type="xml">
+            <list string="Owners" decoration-muted="active == False">
+                <field name="name"/>
+                <field name="owner_type"/>
+                <field name="active" widget="boolean_toggle"/>
+                <field name="locality"/>
+                <field name="region"/>
+                <field name="country"/>
+                <field name="phone"/>
+                <field name="email"/>
+                <field name="current_balance" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="tax_type"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ─── Owner Form View ──────────────────────────────────────────── -->
+    <record id="view_pms_owner_form" model="ir.ui.view">
+        <field name="name">pms.owner.form</field>
+        <field name="model">pms.owner</field>
+        <field name="arch" type="xml">
+            <form string="Owner">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="toggle_active"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-check-circle">
+                            <field name="active"
+                                   widget="boolean_toggle"
+                                   string="Active"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name" placeholder="e.g. Acme Vacation Homes LLC"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Identity">
+                            <field name="owner_type"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Contact">
+                            <field name="email" widget="email"/>
+                            <field name="phone"/>
+                            <field name="fax"/>
+                            <field name="website" widget="url"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <!-- ── Primary Address ── -->
+                        <page string="Address" name="address">
+                            <group>
+                                <group string="Business Address">
+                                    <field name="street_address" placeholder="Street Address"/>
+                                    <field name="extended_address" placeholder="Apt / Suite / Unit"/>
+                                    <field name="locality" placeholder="City"/>
+                                    <field name="region" placeholder="State / Region"/>
+                                    <field name="postal" placeholder="Postal / ZIP Code"/>
+                                    <field name="country" placeholder="US"/>
+                                </group>
+                                <group string="Tax Address">
+                                    <field name="tax_street_address" placeholder="Street Address"/>
+                                    <field name="tax_extended_address" placeholder="Apt / Suite / Unit"/>
+                                    <field name="tax_locality" placeholder="City"/>
+                                    <field name="tax_region" placeholder="State / Region"/>
+                                    <field name="tax_postal_code" placeholder="Postal / ZIP Code"/>
+                                    <field name="tax_country" placeholder="US"/>
+                                    <field name="tax_phone"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <!-- ── Tax / 1099 ── -->
+                        <page string="Tax &amp; 1099" name="tax">
+                            <group>
+                                <group string="1099 Information">
+                                    <field name="tax_type"/>
+                                    <field name="tax_name"/>
+                                    <field name="tax_id" groups="pms.group_pms_manager"/>
+                                </group>
+                                <group string="Agent Commission">
+                                    <field name="agent_commission"/>
+                                    <field name="travel_agent_deduct_commission"/>
+                                    <field name="travel_agent_commission"/>
+                                    <field name="travel_agent_iata_number"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <!-- ── ACH / Payment ── -->
+                        <page string="ACH &amp; Payment" name="ach_payment" groups="base.group_system">
+                            <group>
+                                <group string="Payment Settings">
+                                    <field name="payment_type"/>
+                                    <field name="ach_account_number"/>
+                                    <field name="ach_routing_number"/>
+                                    <field name="ach_account_type"/>
+                                    <field name="ach_verified_at"/>
+                                </group>
+                                <group string="Financial">
+                                    <field name="currency_id" invisible="1"/>
+                                    <field name="opening_balance" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                    <field name="current_balance" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                    <field name="minimum_balance" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                    <field name="always_show_in_statements"/>
+                                    <field name="split_with_contacts"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <!-- ── Insurance (Deprecated) ── -->
+                        <page string="Insurance" name="insurance">
+                            <group>
+                                <group string="General Liability">
+                                    <field name="gl_insurance_policy"/>
+                                    <field name="gl_expiration_date"/>
+                                </group>
+                                <group string="Workers Comp">
+                                    <field name="wc_insurance_policy"/>
+                                    <field name="wc_expiration_date"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <!-- ── Work Orders ── -->
+                        <page string="Work Orders" name="work_orders">
+                            <group>
+                                <field name="enable_work_order_approval"/>
+                            </group>
+                        </page>
+
+                        <!-- ── Unit Ownership ── -->
+                        <page string="Unit Ownership" name="unit_ownership">
+                            <field name="unit_owner_ids">
+                                <list editable="bottom" string="Owned Units">
+                                    <field name="unit_id"/>
+                                    <field name="contract_id"/>
+                                    <field name="contract_type"/>
+                                    <field name="tax_mode"/>
+                                    <field name="start_date"/>
+                                    <field name="end_date"/>
+                                    <field name="owner_name" invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <!-- ── Notes ── -->
+                        <page string="Notes" name="notes">
+                            <group>
+                                <field name="notes" nolabel="1" colspan="2" placeholder="Internal notes about this owner…"/>
+                            </group>
+                            <group string="Tags">
+                                <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}" placeholder="e.g. VIP, Local, Corporate"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ─── Owner Search View ────────────────────────────────────────── -->
+    <record id="view_pms_owner_search" model="ir.ui.view">
+        <field name="name">pms.owner.search</field>
+        <field name="model">pms.owner</field>
+        <field name="arch" type="xml">
+            <search string="Search Owners">
+                <field name="name"/>
+                <field name="email"/>
+                <field name="phone"/>
+                <field name="locality"/>
+                <field name="region"/>
+                <field name="country"/>
+                <separator/>
+                <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Inactive" name="inactive" domain="[('active', '=', False)]"/>
+                <separator/>
+                <filter string="Tax Type" name="group_by_tax_type" context="{'group_by': 'tax_type'}"/>
+                <filter string="Country" name="group_by_country" context="{'group_by': 'country'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ─── Owner Action ─────────────────────────────────────────────── -->
+    <record id="action_pms_owner" model="ir.actions.act_window">
+        <field name="name">Owners</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">pms.owner</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_pms_owner_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Property Owner!
+            </p>
+            <p>
+                Manage owners, their tax/1099 details, ACH payment info, and link them to rental units.
+            </p>
+        </field>
+    </record>
+
+    <!-- ─── Tag Action ────────────────────────────────────────────────── -->
+    <record id="action_pms_owner_tag" model="ir.actions.act_window">
+        <field name="name">Owner Tags</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">pms.owner.tag</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- ─── Menu Items ────────────────────────────────────────────────── -->
+    <menuitem id="menu_pms_owners_cat"
+              name="Owners"
+              parent="menu_pms_root"
+              sequence="15"/>
+
+    <menuitem id="menu_pms_owner"
+              name="All Owners"
+              parent="menu_pms_owners_cat"
+              action="action_pms_owner"
+              sequence="10"/>
+
+    <menuitem id="menu_pms_owner_tag"
+              name="Owner Tags"
+              parent="menu_pms_owners_cat"
+              action="action_pms_owner_tag"
+              sequence="20"/>
+
+</odoo>

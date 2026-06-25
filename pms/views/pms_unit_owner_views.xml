@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ─── Unit Owner List View ──────────────────────────────────────── -->
+    <record id="view_pms_unit_owner_list" model="ir.ui.view">
+        <field name="name">pms.unit.owner.list</field>
+        <field name="model">pms.unit.owner</field>
+        <field name="arch" type="xml">
+            <list string="Unit Ownerships" editable="bottom">
+                <field name="owner_id"/>
+                <field name="unit_id"/>
+                <field name="contract_id"/>
+                <field name="contract_type"/>
+                <field name="fractional_inventory_id"/>
+                <field name="tax_mode"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ─── Unit Owner Form View ─────────────────────────────────────── -->
+    <record id="view_pms_unit_owner_form" model="ir.ui.view">
+        <field name="name">pms.unit.owner.form</field>
+        <field name="model">pms.unit.owner</field>
+        <field name="arch" type="xml">
+            <form string="Unit Ownership">
+                <sheet>
+                    <group>
+                        <group string="Ownership">
+                            <field name="owner_id" options="{'no_create': True}"/>
+                            <field name="unit_id" options="{'no_create': True}"/>
+                            <field name="contract_id"/>
+                        </group>
+                        <group string="Contract Details">
+                            <field name="contract_type"/>
+                            <field name="fractional_inventory_id"
+                                   invisible="contract_type != 'fractional'"/>
+                            <field name="tax_mode"/>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                        </group>
+                    </group>
+                    <group groups="base.group_no_one" string="Audit">
+                        <field name="create_date" readonly="1"/>
+                        <field name="create_uid" readonly="1"/>
+                        <field name="write_date" readonly="1"/>
+                        <field name="write_uid" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ─── Unit Owner Search View ───────────────────────────────────── -->
+    <record id="view_pms_unit_owner_search" model="ir.ui.view">
+        <field name="name">pms.unit.owner.search</field>
+        <field name="model">pms.unit.owner</field>
+        <field name="arch" type="xml">
+            <search string="Search Unit Ownerships">
+                <field name="owner_id"/>
+                <field name="unit_id"/>
+                <separator/>
+                <filter string="Standard" name="standard" domain="[('contract_type', '=', 'standard')]"/>
+                <filter string="Fractional" name="fractional" domain="[('contract_type', '=', 'fractional')]"/>
+                <separator/>
+                <filter string="Active" name="active" domain="['|', ('end_date', '=', False), ('end_date', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter string="Expired" name="expired" domain="[('end_date', '!=', False), ('end_date', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
+                <group>
+                    <filter string="Owner" name="group_by_owner" context="{'group_by': 'owner_id'}"/>
+                    <filter string="Unit" name="group_by_unit" context="{'group_by': 'unit_id'}"/>
+                    <filter string="Contract Type" name="group_by_contract_type" context="{'group_by': 'contract_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ─── Unit Owner Action ─────────────────────────────────────────── -->
+    <record id="action_pms_unit_owner" model="ir.actions.act_window">
+        <field name="name">Unit Ownerships</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">pms.unit.owner</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_pms_unit_owner_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Unit Ownership!
+            </p>
+            <p>
+                Link owners to rental units and manage their contracts, dates, and tax modes.
+            </p>
+        </field>
+    </record>
+
+    <!-- ─── Menu Item ─────────────────────────────────────────────────── -->
+    <menuitem id="menu_pms_unit_owner"
+              name="Unit Ownerships"
+              parent="menu_pms_owners_cat"
+              action="action_pms_unit_owner"
+              sequence="30"/>
+
+</odoo>

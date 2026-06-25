@@ -71,6 +71,18 @@
                                 <field name="description" placeholder="Provide a detailed description of the vacation rental..."/>
                             </group>
                         </page>
+                        <page string="Ownership" name="ownership">
+                            <field name="unit_owner_ids">
+                                <list editable="bottom" string="Owners">
+                                    <field name="owner_id"/>
+                                    <field name="contract_id"/>
+                                    <field name="contract_type"/>
+                                    <field name="tax_mode"/>
+                                    <field name="start_date"/>
+                                    <field name="end_date"/>
+                                </list>
+                            </field>
+                        </page>
                         <page string="Location &amp; Compliance" name="location_compliance">
                             <group>
                                 <group string="Address">

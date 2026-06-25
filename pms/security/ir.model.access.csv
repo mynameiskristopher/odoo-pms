@@ -1,3 +1,6 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_pms_property_user,access.pms.property.user,model_pms_property,base.group_user,1,1,1,1
 access_pms_booking_user,access.pms.booking.user,model_pms_booking,base.group_user,1,1,1,1
+access_pms_owner_user,access.pms.owner.user,model_pms_owner,base.group_user,1,1,1,1
+access_pms_owner_tag_user,access.pms.owner.tag.user,model_pms_owner_tag,base.group_user,1,1,1,1
+access_pms_unit_owner_user,access.pms.unit.owner.user,model_pms_unit_owner,base.group_user,1,1,1,1

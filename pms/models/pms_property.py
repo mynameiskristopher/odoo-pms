@@ -153,3 +153,10 @@ class PmsProperty(models.Model):
         string='Municipality ID',
         help='Local tax, permit, license, or municipality ID for STR compliance'
     )
+
+    unit_owner_ids = fields.One2many(
+        'pms.unit.owner',
+        'unit_id',
+        string='Owner History',
+        help='Ownership records linking this unit to its owner(s).',
+    )
