@@ -160,3 +160,12 @@ class PmsProperty(models.Model):
         string='Owner History',
         help='Ownership records linking this unit to its owner(s).',
     )
+
+    zone_id = fields.Many2one(
+        'pms.zone',
+        string='Zone',
+        ondelete='restrict',
+        index=True,
+        help='The zone this property belongs to (e.g. Building A, Floor 2).'
+    )
+
