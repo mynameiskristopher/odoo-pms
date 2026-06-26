@@ -30,22 +30,8 @@ class PmsUnitOwner(models.Model):
         required=True,
         help='The contract that is attached to the owner selected.',
     )
-    fractional_inventory_id = fields.Integer(
-        string='Fractional Inventory ID',
-        help='Fractional inventory ID if the unit is under a fractional group.',
-    )
 
     # ── Contract Info ────────────────────────────────────────────────────
-    contract_type = fields.Selection(
-        [
-            ('standard', 'Standard'),
-            ('fractional', 'Fractional'),
-        ],
-        string='Contract Type',
-        required=True,
-        default='standard',
-        help='Fractional if the unit is under a fractional group; otherwise Standard.',
-    )
     tax_mode = fields.Selection(
         [
             ('inclusive', 'Inclusive'),

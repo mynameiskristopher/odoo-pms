@@ -10,8 +10,6 @@
                 <field name="owner_id"/>
                 <field name="unit_id"/>
                 <field name="contract_id"/>
-                <field name="contract_type"/>
-                <field name="fractional_inventory_id"/>
                 <field name="tax_mode"/>
                 <field name="start_date"/>
                 <field name="end_date"/>
@@ -33,9 +31,6 @@
                             <field name="contract_id"/>
                         </group>
                         <group string="Contract Details">
-                            <field name="contract_type"/>
-                            <field name="fractional_inventory_id"
-                                   invisible="contract_type != 'fractional'"/>
                             <field name="tax_mode"/>
                             <field name="start_date"/>
                             <field name="end_date"/>
@@ -61,15 +56,12 @@
                 <field name="owner_id"/>
                 <field name="unit_id"/>
                 <separator/>
-                <filter string="Standard" name="standard" domain="[('contract_type', '=', 'standard')]"/>
-                <filter string="Fractional" name="fractional" domain="[('contract_type', '=', 'fractional')]"/>
-                <separator/>
                 <filter string="Active" name="active" domain="['|', ('end_date', '=', False), ('end_date', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
                 <filter string="Expired" name="expired" domain="[('end_date', '!=', False), ('end_date', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
                 <group>
                     <filter string="Owner" name="group_by_owner" context="{'group_by': 'owner_id'}"/>
                     <filter string="Unit" name="group_by_unit" context="{'group_by': 'unit_id'}"/>
-                    <filter string="Contract Type" name="group_by_contract_type" context="{'group_by': 'contract_type'}"/>
+
                 </group>
             </search>
         </field>

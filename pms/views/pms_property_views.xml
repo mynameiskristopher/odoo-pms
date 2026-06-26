@@ -76,7 +76,6 @@
                                 <list editable="bottom" string="Owners">
                                     <field name="owner_id"/>
                                     <field name="contract_id"/>
-                                    <field name="contract_type"/>
                                     <field name="tax_mode"/>
                                     <field name="start_date"/>
                                     <field name="end_date"/>
