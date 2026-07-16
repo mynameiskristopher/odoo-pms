@@ -49,7 +49,7 @@
                             <field name="number_of_floors"/>
                             <field name="square_footage"/>
                             <field name="max_occupancy"/>
-                            <field name="pets_allowed"/>
+                            <field name="pets_allowed" readonly="not override_config and zone_id"/>
                             <label for="full_bathrooms" string="Bathrooms"/>
                             <div class="o_row">
                                 <span>Full:</span>
@@ -61,13 +61,26 @@
                             </div>
                         </group>
                         <group string="Logistics &amp; Rent">
-                            <field name="checkin_time" widget="float_time"/>
-                            <field name="checkout_time" widget="float_time"/>
+                            <field name="override_config"/>
+                            <field name="checkin_time" widget="float_time" readonly="not override_config and zone_id"/>
+                            <field name="checkout_time" widget="float_time" readonly="not override_config and zone_id"/>
                             <field name="list_price" string="Default Daily Rent"/>
                         </group>
                     </group>
                     <notebook>
+                        <page string="Amenities" name="amenities">
+                            <group>
+                                <field name="override_amenities"/>
+                            </group>
+                            <group string="Override Amenities" invisible="not override_amenities">
+                                <field name="custom_amenity_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                            </group>
+                            <group string="Effective Amenities">
+                                <field name="amenity_ids" widget="many2many_tags" readonly="1"/>
+                            </group>
+                        </page>
                         <page string="Description" name="description">
+
                             <group>
                                 <field name="short_description" placeholder="A short teaser/summary of the property..."/>
                                 <field name="description" placeholder="Provide a detailed description of the vacation rental..."/>

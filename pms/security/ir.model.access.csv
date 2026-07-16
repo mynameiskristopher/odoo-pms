@@ -6,3 +6,4 @@ access_pms_owner_tag_user,access.pms.owner.tag.user,model_pms_owner_tag,base.gro
 access_pms_unit_owner_user,access.pms.unit.owner.user,model_pms_unit_owner,base.group_user,1,1,1,1
 access_pms_zone_type_user,access.pms.zone.type.user,model_pms_zone_type,base.group_user,1,1,1,1
 access_pms_zone_user,access.pms.zone.user,model_pms_zone,base.group_user,1,1,1,1
+access_pms_amenity_user,access.pms.amenity.user,model_pms_amenity,base.group_user,1,1,1,1

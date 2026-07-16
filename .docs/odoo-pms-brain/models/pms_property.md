@@ -9,9 +9,9 @@ The `pms.property` model maps directly to Schema.org's **`VacationRental`** clas
 | Schema.org Property | Odoo Field Name | Odoo Type | Description |
 |---------------------|-----------------|-----------|-------------|
 | - | `product_tmpl_id` | `Many2one` | Pointer to the delegated `product.template` (Odoo core) |
-| `checkoutTime` | `checkout_time` | `Float` | The latest checkout time (represented as float, e.g. 11.0 for 11:00 AM) |
-| `checkinTime` | `checkin_time` | `Float` | The earliest checkin time (represented as float, e.g. 15.0 for 3:00 PM) |
-| `petsAllowed` | `pets_allowed` | `Boolean` | Indicates whether pets are allowed in the rental |
+| `checkoutTime` | `checkout_time` | `Float` | Computed/editable checkout time. Inherits from zone unless overridden. |
+| `checkinTime` | `checkin_time` | `Float` | Computed/editable checkin time. Inherits from zone unless overridden. |
+| `petsAllowed` | `pets_allowed` | `Boolean` | Computed/editable flag for pets. Inherits from zone unless overridden. |
 | `numberOfRooms` | `number_of_rooms`| `Integer` | Total number of rooms in the property |
 | `numberOfFloors` | `number_of_floors`| `Integer` | Total number of floors in the property |
 | `floorSize` | `square_footage` | `Float` | Total square footage of the property |
@@ -36,6 +36,17 @@ The `pms.property` model maps directly to Schema.org's **`VacationRental`** clas
 | `numberOfBedrooms` | `bedrooms` | `Integer` | Number of bedrooms |
 | `permitNo` | `municipality_id` | `Char` | Local municipality ID, license, or permit |
 | - | `zone_id` | `Many2one` | The taxonomical zone this property belongs to (references `pms.zone`) |
+| - | `override_config` | `Boolean` | Flag indicating whether this property overrides its zone's configuration |
+| `amenityFeature` | `custom_amenity_ids` | `Many2many` | Custom amenities defined explicitly on this property (references `pms.amenity`) |
+| - | `override_amenities` | `Boolean` | Flag indicating whether this property overrides its zone's amenities |
+| `amenityFeature` (resolved) | `amenity_ids` | `Many2many` | Effective resolved amenities for this property (computed, stored) |
+
+### Property Config & Amenities Inheritance
+
+Properties also inherit effective configuration settings and amenities from their assigned zone:
+- **Amenities**: If `override_amenities` is unchecked, the property inherits `amenity_ids` from its `zone_id.amenity_ids`. If checked, it uses its `custom_amenity_ids` (which can be empty).
+- **Logistics**: If `override_config` is unchecked, `checkin_time`, `checkout_time`, and `pets_allowed` are computed from the zone's effective values. If checked, they can be edited directly on the property.
+
 
 
 

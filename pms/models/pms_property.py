@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from odoo import models, fields
+from odoo import models, fields, api
 
 class PmsProperty(models.Model):
     _name = 'pms.property'
@@ -14,21 +14,36 @@ class PmsProperty(models.Model):
         help='Linked product template'
     )
 
+    override_config = fields.Boolean(
+        string='Override Zone Configuration',
+        default=False,
+        help='Check to override zone configuration fields. If unchecked, fields are inherited from the zone.'
+    )
+
     checkout_time = fields.Float(
         string='Checkout Time',
+        compute='_compute_checkout_time',
+        store=True,
+        readonly=False,
         help='Latest checkout time'
     )
     
     checkin_time = fields.Float(
         string='Check-in Time',
+        compute='_compute_checkin_time',
+        store=True,
+        readonly=False,
         help='Earliest check-in time'
     )
     
     pets_allowed = fields.Boolean(
         string='Pets Allowed',
-        default=False,
+        compute='_compute_pets_allowed',
+        store=True,
+        readonly=False,
         help='Whether pets are allowed in the rental property'
     )
+
     
     number_of_rooms = fields.Integer(
         string='Number of Rooms',
@@ -168,4 +183,61 @@ class PmsProperty(models.Model):
         index=True,
         help='The zone this property belongs to (e.g. Building A, Floor 2).'
     )
+
+    custom_amenity_ids = fields.Many2many(
+        'pms.amenity',
+        'pms_property_amenity_rel',
+        'property_id',
+        'amenity_id',
+        string='Custom Amenities',
+        help='Amenities defined specifically for this property.'
+    )
+    override_amenities = fields.Boolean(
+        string='Override Zone Amenities',
+        default=False,
+        help='Check to override zone amenities. If unchecked, zone amenities are inherited.'
+    )
+    amenity_ids = fields.Many2many(
+        'pms.amenity',
+        'pms_property_effective_amenity_rel',
+        'property_id',
+        'amenity_id',
+        string='Amenities',
+        compute='_compute_amenity_ids',
+        store=True,
+        help='Effective amenities (either inherited or overridden).'
+    )
+
+    @api.depends('override_config', 'zone_id.effective_checkin_time')
+    def _compute_checkin_time(self):
+        for prop in self:
+            if not prop.override_config and prop.zone_id:
+                prop.checkin_time = prop.zone_id.effective_checkin_time
+            else:
+                prop.checkin_time = prop.checkin_time or 0.0
+
+    @api.depends('override_config', 'zone_id.effective_checkout_time')
+    def _compute_checkout_time(self):
+        for prop in self:
+            if not prop.override_config and prop.zone_id:
+                prop.checkout_time = prop.zone_id.effective_checkout_time
+            else:
+                prop.checkout_time = prop.checkout_time or 0.0
+
+    @api.depends('override_config', 'zone_id.effective_pets_allowed')
+    def _compute_pets_allowed(self):
+        for prop in self:
+            if not prop.override_config and prop.zone_id:
+                prop.pets_allowed = prop.zone_id.effective_pets_allowed
+            else:
+                prop.pets_allowed = prop.pets_allowed or False
+
+    @api.depends('custom_amenity_ids', 'override_amenities', 'zone_id.amenity_ids')
+    def _compute_amenity_ids(self):
+        for prop in self:
+            if prop.override_amenities or not prop.zone_id:
+                prop.amenity_ids = prop.custom_amenity_ids
+            else:
+                prop.amenity_ids = prop.zone_id.amenity_ids
+
 
