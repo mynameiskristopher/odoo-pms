@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ─── Revenue Policy List ──────────────────────────────────────── -->
+    <record id="view_pms_revenue_policy_list" model="ir.ui.view">
+        <field name="name">pms.revenue.policy.list</field>
+        <field name="model">pms.revenue.policy</field>
+        <field name="arch" type="xml">
+            <list string="Revenue Policies" decoration-muted="active == False">
+                <field name="name"/>
+                <field name="management_fee_type"/>
+                <field name="management_fee_percent"/>
+                <field name="management_fee_fixed_amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="effective_start_date"/>
+                <field name="effective_end_date"/>
+                <field name="active" widget="boolean_toggle"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ─── Revenue Policy Form ──────────────────────────────────────── -->
+    <record id="view_pms_revenue_policy_form" model="ir.ui.view">
+        <field name="name">pms.revenue.policy.form</field>
+        <field name="model">pms.revenue.policy</field>
+        <field name="arch" type="xml">
+            <form string="Revenue Policy">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1><field name="name" placeholder="e.g. Standard 20% Management Fee Policy"/></h1>
+                    </div>
+                    <group>
+                        <group string="Management Fee">
+                            <field name="management_fee_type"/>
+                            <field name="management_fee_percent"
+                                   widget="percentage"
+                                   invisible="management_fee_type not in ('percentage', 'percentage_plus_fixed', 'tiered')"/>
+                            <field name="management_fee_fixed_amount"
+                                   widget="monetary"
+                                   options="{'currency_field': 'currency_id'}"
+                                   invisible="management_fee_type not in ('fixed', 'percentage_plus_fixed')"/>
+                            <field name="minimum_management_fee"
+                                   widget="monetary"
+                                   options="{'currency_field': 'currency_id'}"/>
+                            <field name="maximum_management_fee"
+                                   widget="monetary"
+                                   options="{'currency_field': 'currency_id'}"/>
+                        </group>
+                        <group string="Settings">
+                            <field name="rounding_method"/>
+                            <field name="effective_start_date"/>
+                            <field name="effective_end_date"/>
+                            <field name="active"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Allocation Rules" name="allocation_rules">
+                            <field name="line_ids">
+                                <list editable="bottom" string="Revenue Allocation Lines">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="charge_type_id"/>
+                                    <field name="owner_share_percent"/>
+                                    <field name="manager_share_percent"/>
+                                    <field name="liability_share_percent"/>
+                                    <field name="commission_basis"/>
+                                    <field name="expense_responsibility"/>
+                                    <field name="effective_start_date"/>
+                                    <field name="effective_end_date"/>
+                                    <field name="active" widget="boolean_toggle"/>
+                                    <field name="note"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="note" nolabel="1" colspan="2"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ─── Revenue Policy Search ────────────────────────────────────── -->
+    <record id="view_pms_revenue_policy_search" model="ir.ui.view">
+        <field name="name">pms.revenue.policy.search</field>
+        <field name="model">pms.revenue.policy</field>
+        <field name="arch" type="xml">
+            <search string="Search Revenue Policies">
+                <field name="name"/>
+                <separator/>
+                <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Inactive" name="inactive" domain="[('active', '=', False)]"/>
+                <separator/>
+                <filter string="Fee Type" name="group_by_fee_type" context="{'group_by': 'management_fee_type'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ─── Action ────────────────────────────────────────────────────── -->
+    <record id="action_pms_revenue_policy" model="ir.actions.act_window">
+        <field name="name">Revenue Policies</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">pms.revenue.policy</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_pms_revenue_policy_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Revenue Policy!
+            </p>
+            <p>
+                Revenue Policies define management fee structures and how reservation
+                charges are allocated between owners, the management company, and liabilities.
+            </p>
+        </field>
+    </record>
+
+    <!-- ─── Menu ──────────────────────────────────────────────────────── -->
+    <menuitem id="menu_pms_revenue_policy"
+              name="Revenue Policies"
+              parent="menu_pms_config_cat"
+              action="action_pms_revenue_policy"
+              sequence="30"/>
+
+</odoo>

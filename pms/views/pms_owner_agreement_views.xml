@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ─── Owner Agreement List ─────────────────────────────────────── -->
+    <record id="view_pms_owner_agreement_list" model="ir.ui.view">
+        <field name="name">pms.owner.agreement.list</field>
+        <field name="model">pms.owner.agreement</field>
+        <field name="arch" type="xml">
+            <list string="Owner Agreements" decoration-success="status == 'active'"
+                  decoration-danger="status == 'terminated'"
+                  decoration-muted="status == 'expired'">
+                <field name="name"/>
+                <field name="owner_id"/>
+                <field name="property_id"/>
+                <field name="effective_start_date"/>
+                <field name="effective_end_date"/>
+                <field name="status" widget="badge"
+                       decoration-success="status == 'active'"
+                       decoration-warning="status == 'draft'"
+                       decoration-danger="status == 'terminated'"
+                       decoration-muted="status == 'expired'"/>
+                <field name="settlement_frequency"/>
+                <field name="revenue_policy_id"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ─── Owner Agreement Form ─────────────────────────────────────── -->
+    <record id="view_pms_owner_agreement_form" model="ir.ui.view">
+        <field name="name">pms.owner.agreement.form</field>
+        <field name="model">pms.owner.agreement</field>
+        <field name="arch" type="xml">
+            <form string="Owner Agreement">
+                <header>
+                    <button name="action_activate" type="object" string="Activate"
+                            class="oe_highlight" invisible="status not in ('draft', 'expired')"/>
+                    <button name="action_terminate" type="object" string="Terminate"
+                            invisible="status not in ('active', 'expired')"/>
+                    <button name="action_expire" type="object" string="Mark Expired"
+                            invisible="status != 'active'"/>
+                    <field name="status" widget="statusbar"
+                           statusbar_visible="draft,active,expired,terminated"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1><field name="name" placeholder="AGR/2026/0001"/></h1>
+                    </div>
+                    <group>
+                        <group string="Parties">
+                            <field name="owner_id" options="{'no_quick_create': True}"/>
+                            <field name="property_id" options="{'no_quick_create': True}"/>
+                        </group>
+                        <group string="Dates &amp; Frequency">
+                            <field name="effective_start_date"/>
+                            <field name="effective_end_date" placeholder="Leave blank for open-ended"/>
+                            <field name="settlement_frequency"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Policy">
+                            <field name="revenue_policy_id" options="{'no_quick_create': True}"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="analytic_account_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <!-- ── Revenue & Fee Policy Tab ── -->
+                        <page string="Revenue &amp; Fee Policy" name="revenue_policy">
+                            <group>
+                                <group>
+                                    <field name="revenue_policy_id" readonly="1"/>
+                                </group>
+                            </group>
+                            <field name="revenue_policy_id" context="{'form_view_ref': 'pms.view_pms_revenue_policy_form'}" readonly="1">
+                                <form string="Revenue Policy Preview">
+                                    <group>
+                                        <field name="management_fee_type"/>
+                                        <field name="management_fee_percent"/>
+                                        <field name="management_fee_fixed_amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                        <field name="rounding_method"/>
+                                    </group>
+                                    <field name="line_ids">
+                                        <list editable="bottom" string="Allocation Rules">
+                                            <field name="charge_type_id"/>
+                                            <field name="owner_share_percent"/>
+                                            <field name="manager_share_percent"/>
+                                            <field name="liability_share_percent"/>
+                                            <field name="commission_basis"/>
+                                            <field name="expense_responsibility"/>
+                                            <field name="effective_start_date"/>
+                                            <field name="effective_end_date"/>
+                                            <field name="note"/>
+                                        </list>
+                                    </field>
+                                </form>
+                            </field>
+                        </page>
+
+                        <page string="Notes" name="notes">
+                            <field name="note" nolabel="1" colspan="2"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ─── Owner Agreement Search ───────────────────────────────────── -->
+    <record id="view_pms_owner_agreement_search" model="ir.ui.view">
+        <field name="name">pms.owner.agreement.search</field>
+        <field name="model">pms.owner.agreement</field>
+        <field name="arch" type="xml">
+            <search string="Search Owner Agreements">
+                <field name="name"/>
+                <field name="owner_id"/>
+                <field name="property_id"/>
+                <field name="revenue_policy_id"/>
+                <separator/>
+                <filter string="Active" name="active" domain="[('status', '=', 'active')]"/>
+                <filter string="Draft" name="draft" domain="[('status', '=', 'draft')]"/>
+                <filter string="Expired" name="expired" domain="[('status', '=', 'expired')]"/>
+                <filter string="Terminated" name="terminated" domain="[('status', '=', 'terminated')]"/>
+                <separator/>
+                <filter string="Owner" name="group_by_owner" context="{'group_by': 'owner_id'}"/>
+                <filter string="Property" name="group_by_property" context="{'group_by': 'property_id'}"/>
+                <filter string="Status" name="group_by_status" context="{'group_by': 'status'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ─── Action ────────────────────────────────────────────────────── -->
+    <record id="action_pms_owner_agreement" model="ir.actions.act_window">
+        <field name="name">Owner Agreements</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">pms.owner.agreement</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_pms_owner_agreement_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Owner Agreement!
+            </p>
+            <p>
+                Owner Agreements link an owner to a property, define the settlement frequency,
+                and reference the revenue policy that governs fee calculations.
+            </p>
+        </field>
+    </record>
+
+    <!-- ─── Menu ──────────────────────────────────────────────────────── -->
+    <menuitem id="menu_pms_owner_agreement"
+              name="Owner Agreements"
+              parent="menu_pms_owners_cat"
+              action="action_pms_owner_agreement"
+              sequence="30"/>
+
+</odoo>

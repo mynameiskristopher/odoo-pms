@@ -6,3 +6,10 @@ access_pms_owner_tag_user,access.pms.owner.tag.user,model_pms_owner_tag,base.gro
 access_pms_unit_owner_user,access.pms.unit.owner.user,model_pms_unit_owner,base.group_user,1,1,1,1
 access_pms_zone_type_user,access.pms.zone.type.user,model_pms_zone_type,base.group_user,1,1,1,1
 access_pms_zone_user,access.pms.zone.user,model_pms_zone,base.group_user,1,1,1,1
+access_pms_charge_type_user,access.pms.charge.type.user,model_pms_charge_type,base.group_user,1,1,1,1
+access_pms_revenue_policy_user,access.pms.revenue.policy.user,model_pms_revenue_policy,base.group_user,1,1,1,1
+access_pms_revenue_policy_line_user,access.pms.revenue.policy.line.user,model_pms_revenue_policy_line,base.group_user,1,1,1,1
+access_pms_owner_agreement_user,access.pms.owner.agreement.user,model_pms_owner_agreement,base.group_user,1,1,1,1
+access_pms_reservation_charge_user,access.pms.reservation.charge.user,model_pms_reservation_charge,base.group_user,1,1,1,1
+access_pms_owner_settlement_user,access.pms.owner.settlement.user,model_pms_owner_settlement,base.group_user,1,1,1,1
+access_pms_owner_settlement_line_user,access.pms.owner.settlement.line.user,model_pms_owner_settlement_line,base.group_user,1,1,1,1
