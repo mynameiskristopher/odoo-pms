@@ -74,12 +74,24 @@
                         </h1>
                     </div>
                     <group>
-                        <group>
+                        <group string="Zone Details">
                             <field name="type_id" options="{'no_open': True, 'no_quick_create': True}"/>
                             <field name="parent_id" options="{'no_quick_create': True}"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Configuration Overrides">
+                            <field name="checkin_time" widget="float_time"/>
+                            <field name="checkout_time" widget="float_time"/>
+                            <field name="pets_allowed"/>
+                        </group>
+                    </group>
+                    <group string="Effective Settings (Inherited or Overridden)">
+                        <group>
+                            <field name="effective_checkin_time" widget="float_time" readonly="1"/>
+                            <field name="effective_checkout_time" widget="float_time" readonly="1"/>
                         </group>
                         <group>
-                            <field name="active"/>
+                            <field name="effective_pets_allowed" readonly="1"/>
                         </group>
                     </group>
                     <notebook>
@@ -101,11 +113,23 @@
                                 </list>
                             </field>
                         </page>
+                        <page string="Amenities" name="amenities">
+                            <group>
+                                <field name="override_amenities"/>
+                            </group>
+                            <group string="Override Amenities" invisible="not override_amenities">
+                                <field name="custom_amenity_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                            </group>
+                            <group string="Effective Amenities">
+                                <field name="amenity_ids" widget="many2many_tags" readonly="1"/>
+                            </group>
+                        </page>
                     </notebook>
                 </sheet>
             </form>
         </field>
     </record>
+
 
     <record id="view_pms_zone_search" model="ir.ui.view">
         <field name="name">pms.zone.search</field>
@@ -158,5 +182,53 @@
               parent="menu_pms_config_cat"
               action="action_pms_zone_type"
               sequence="10"/>
+
+    <!-- Amenity Views -->
+    <record id="view_pms_amenity_list" model="ir.ui.view">
+        <field name="name">pms.amenity.list</field>
+        <field name="model">pms.amenity</field>
+        <field name="arch" type="xml">
+            <list string="Amenities" editable="bottom">
+                <field name="name"/>
+                <field name="description"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_pms_amenity_form" model="ir.ui.view">
+        <field name="name">pms.amenity.form</field>
+        <field name="model">pms.amenity</field>
+        <field name="arch" type="xml">
+            <form string="Amenity">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="description"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_pms_amenity" model="ir.actions.act_window">
+        <field name="name">Amenities</field>
+        <field name="res_model">pms.amenity</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Define your first Property Amenity!
+            </p>
+            <p>
+                Amenities can be inherited from parent zones or set individually on specific zones and properties.
+            </p>
+        </field>
+    </record>
+
+    <!-- Amenities under Configuration Category -->
+    <menuitem id="menu_pms_amenity"
+              name="Amenities"
+              parent="menu_pms_config_cat"
+              action="action_pms_amenity"
+              sequence="20"/>
 
 </odoo>

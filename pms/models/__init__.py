@@ -5,4 +5,6 @@ from . import sale_order
 from . import pms_owner
 from . import pms_unit_owner
 from . import pms_zone
+from . import pms_amenity
+
 
