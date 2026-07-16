@@ -99,10 +99,15 @@ class PmsOwnerAgreement(models.Model):
         string='Notes',
     )
 
-    _sql_constraints = [
-        ('name_uniq', 'unique(name, company_id)',
-         'Agreement reference must be unique per company.'),
-    ]
+    @api.constrains('name', 'company_id')
+    def _check_name_unique(self):
+        for rec in self:
+            if self.search_count([
+                ('name', '=', rec.name),
+                ('company_id', '=', rec.company_id.id),
+                ('id', '!=', rec.id),
+            ]):
+                raise ValidationError(_('Agreement reference must be unique per company.'))
 
     @api.constrains('effective_start_date', 'effective_end_date')
     def _check_dates(self):

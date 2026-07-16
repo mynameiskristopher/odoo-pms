@@ -181,10 +181,15 @@ class PmsOwnerSettlement(models.Model):
         copy=False,
     )
 
-    _sql_constraints = [
-        ('name_uniq', 'unique(name, company_id)',
-         'Settlement reference must be unique per company.'),
-    ]
+    @api.constrains('name', 'company_id')
+    def _check_name_unique(self):
+        for rec in self:
+            if self.search_count([
+                ('name', '=', rec.name),
+                ('company_id', '=', rec.company_id.id),
+                ('id', '!=', rec.id),
+            ]):
+                raise ValidationError(_('Settlement reference must be unique per company.'))
 
     @api.constrains('period_start', 'period_end')
     def _check_period(self):

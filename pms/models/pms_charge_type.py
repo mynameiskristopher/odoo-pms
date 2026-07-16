@@ -69,11 +69,6 @@ class PmsChargeType(models.Model):
         string='Notes',
     )
 
-    _sql_constraints = [
-        ('code_uniq', 'unique(code, company_id)',
-         'Charge type code must be unique per company.'),
-    ]
-
     @api.model
     def _get_default_charge_types(self):
         """Return a list of dicts for seeding default charge types."""
@@ -96,3 +91,13 @@ class PmsChargeType(models.Model):
             {'name': 'Refund', 'code': 'REFUND', 'is_revenue': True, 'is_refund': True},
             {'name': 'Security Deposit', 'code': 'SECURITY_DEPOSIT', 'is_revenue': False},
         ]
+
+    @api.constrains('code', 'company_id')
+    def _check_code_unique(self):
+        for rec in self:
+            if self.search_count([
+                ('code', '=', rec.code),
+                ('company_id', '=', rec.company_id.id),
+                ('id', '!=', rec.id),
+            ]):
+                raise ValidationError(_('Charge type code must be unique per company.'))
