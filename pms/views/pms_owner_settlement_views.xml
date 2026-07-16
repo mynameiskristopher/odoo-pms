@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ─── Settlement List ───────────────────────────────────────────── -->
+    <record id="view_pms_owner_settlement_list" model="ir.ui.view">
+        <field name="name">pms.owner.settlement.list</field>
+        <field name="model">pms.owner.settlement</field>
+        <field name="arch" type="xml">
+            <list string="Owner Settlements"
+                  decoration-success="state == 'paid'"
+                  decoration-primary="state == 'finalized'"
+                  decoration-warning="state in ('draft', 'calculated', 'reviewed')"
+                  decoration-danger="state == 'exception'"
+                  decoration-muted="state == 'cancelled'">
+                <field name="name"/>
+                <field name="owner_id"/>
+                <field name="property_id"/>
+                <field name="period_start"/>
+                <field name="period_end"/>
+                <field name="owner_gross_proceeds" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="management_fee" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="owner_net_payout" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="state" widget="badge"
+                       decoration-success="state in ('finalized', 'paid')"
+                       decoration-warning="state in ('draft', 'calculated', 'reviewed')"
+                       decoration-danger="state == 'exception'"
+                       decoration-muted="state == 'cancelled'"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ─── Settlement Form ───────────────────────────────────────────── -->
+    <record id="view_pms_owner_settlement_form" model="ir.ui.view">
+        <field name="name">pms.owner.settlement.form</field>
+        <field name="model">pms.owner.settlement</field>
+        <field name="arch" type="xml">
+            <form string="Owner Settlement">
+                <header>
+                    <button name="action_calculate" type="object" string="Calculate"
+                            class="oe_highlight" invisible="state not in ('draft', 'exception')"/>
+                    <button name="action_reset_to_draft" type="object" string="Reset to Draft"
+                            invisible="state not in ('exception', 'calculated')"/>
+                    <button name="action_review" type="object" string="Mark Reviewed"
+                            class="oe_highlight" invisible="state != 'calculated'"/>
+                    <button name="action_finalize" type="object" string="Finalize"
+                            class="oe_highlight" invisible="state != 'reviewed'"/>
+                    <button name="action_pay" type="object" string="Mark Paid"
+                            class="oe_highlight" invisible="state != 'finalized'"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            invisible="state in ('finalized', 'paid', 'cancelled')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,calculated,reviewed,finalized,paid"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1><field name="name" placeholder="STL/2026/0001"/></h1>
+                    </div>
+                    <group>
+                        <group string="Parties">
+                            <field name="owner_id" readonly="state in ('finalized', 'paid')"/>
+                            <field name="property_id" readonly="state in ('finalized', 'paid')"/>
+                            <field name="agreement_id" readonly="state in ('finalized', 'paid')"/>
+                            <field name="policy_id" readonly="state in ('finalized', 'paid')"/>
+                        </group>
+                        <group string="Period">
+                            <field name="period_start" readonly="state in ('finalized', 'paid')"/>
+                            <field name="period_end" readonly="state in ('finalized', 'paid')"/>
+                            <field name="analytic_account_id"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <group string="Summary">
+                        <group>
+                            <field name="owner_gross_proceeds" widget="monetary" options="{'currency_field': 'currency_id'}" readonly="1"/>
+                            <field name="commission_base" widget="monetary" options="{'currency_field': 'currency_id'}" readonly="1"/>
+                            <field name="management_fee" widget="monetary" options="{'currency_field': 'currency_id'}" readonly="1"/>
+                            <field name="tax_liability" widget="monetary" options="{'currency_field': 'currency_id'}" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="owner_expenses" widget="monetary" options="{'currency_field': 'currency_id'}" readonly="1"/>
+                            <field name="owner_credits" widget="monetary" options="{'currency_field': 'currency_id'}" readonly="1"/>
+                            <field name="owner_net_payout" widget="monetary" options="{'currency_field': 'currency_id'}" readonly="1"
+                                   decoration-success="owner_net_payout > 0" decoration-danger="owner_net_payout &lt; 0"/>
+                            <field name="finalized_at" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Settlement Lines" name="lines">
+                            <field name="line_ids" readonly="state in ('finalized', 'paid')">
+                                <list string="Lines">
+                                    <field name="reservation_id"/>
+                                    <field name="charge_type_id"/>
+                                    <field name="gross_amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                    <field name="owner_amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                    <field name="manager_amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                    <field name="liability_amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                    <field name="commissionable_amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                    <field name="management_fee_amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Calculation Details" name="calc_details">
+                            <field name="line_ids" readonly="1">
+                                <list string="Calculation Breakdown">
+                                    <field name="charge_type_id"/>
+                                    <field name="reservation_id"/>
+                                    <field name="calculation_description"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Snapshot" name="snapshot" invisible="state not in ('finalized', 'paid')">
+                            <group>
+                                <group>
+                                    <field name="snapshot_management_fee_type" readonly="1"/>
+                                    <field name="snapshot_management_fee_rate" readonly="1"/>
+                                </group>
+                                <group>
+                                    <field name="snapshot_agreement_data" readonly="1" widget="json"/>
+                                    <field name="snapshot_policy_data" readonly="1" widget="json"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Exception" name="exception" invisible="state != 'exception'">
+                            <group>
+                                <field name="exception_note" nolabel="1" colspan="2" readonly="1"/>
+                            </group>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="note" nolabel="1" colspan="2"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ─── Settlement Search ─────────────────────────────────────────── -->
+    <record id="view_pms_owner_settlement_search" model="ir.ui.view">
+        <field name="name">pms.owner.settlement.search</field>
+        <field name="model">pms.owner.settlement</field>
+        <field name="arch" type="xml">
+            <search string="Search Settlements">
+                <field name="name"/>
+                <field name="owner_id"/>
+                <field name="property_id"/>
+                <separator/>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Calculated" name="calculated" domain="[('state', '=', 'calculated')]"/>
+                <filter string="Reviewed" name="reviewed" domain="[('state', '=', 'reviewed')]"/>
+                <filter string="Finalized" name="finalized" domain="[('state', '=', 'finalized')]"/>
+                <filter string="Paid" name="paid" domain="[('state', '=', 'paid')]"/>
+                <filter string="Exception" name="exception" domain="[('state', '=', 'exception')]"/>
+                <filter string="Cancelled" name="cancelled" domain="[('state', '=', 'cancelled')]"/>
+                <separator/>
+                <filter string="Owner" name="group_by_owner" context="{'group_by': 'owner_id'}"/>
+                <filter string="Property" name="group_by_property" context="{'group_by': 'property_id'}"/>
+                <filter string="State" name="group_by_state" context="{'group_by': 'state'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ─── Action ────────────────────────────────────────────────────── -->
+    <record id="action_pms_owner_settlement" model="ir.actions.act_window">
+        <field name="name">Owner Settlements</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">pms.owner.settlement</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_pms_owner_settlement_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Owner Settlement!
+            </p>
+            <p>
+                Owner Settlements calculate the final payout to property owners by applying
+                revenue policies, management fees, expenses, and credits across reservation charges.
+            </p>
+        </field>
+    </record>
+
+    <!-- ─── Menu ──────────────────────────────────────────────────────── -->
+    <menuitem id="menu_pms_owner_settlement"
+              name="Owner Settlements"
+              parent="menu_pms_owners_cat"
+              action="action_pms_owner_settlement"
+              sequence="40"/>
+
+</odoo>
