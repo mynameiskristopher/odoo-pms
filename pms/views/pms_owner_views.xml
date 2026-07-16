@@ -112,7 +112,7 @@
                                 <group string="1099 Information">
                                     <field name="tax_type"/>
                                     <field name="tax_name"/>
-                                    <field name="tax_id" groups="pms.group_pms_manager"/>
+                                    <field name="tax_id"/>
                                 </group>
                                 <group string="Agent Commission">
                                     <field name="agent_commission"/>

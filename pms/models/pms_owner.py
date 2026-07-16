@@ -79,21 +79,18 @@ class PmsOwner(models.Model):
     )
     tax_id = fields.Char(
         string='1099 Tax ID',
-        groups='pms.group_pms_manager',
-        help='1099 Tax ID (Restricted).',
+        help='1099 Tax ID.',
     )
 
     # ── ACH / Payment Information (Restricted) ──────────────────────────
     ach_account_number = fields.Char(
         string='ACH Account Number',
-        groups='pms.group_pms_manager',
-        help='ACH Account Number (Restricted).',
+        help='ACH Account Number.',
     )
     ach_routing_number = fields.Char(
         string='ACH Routing Number',
         size=9,
-        groups='pms.group_pms_manager',
-        help='ACH Routing Number – exactly 9 digits (Restricted).',
+        help='ACH Routing Number – exactly 9 digits.',
     )
     ach_account_type = fields.Selection(
         [
@@ -103,13 +100,11 @@ class PmsOwner(models.Model):
             ('personal-savings', 'Personal Savings'),
         ],
         string='ACH Account Type',
-        groups='pms.group_pms_manager',
-        help='Used if payment type is ACH. (Restricted / Deprecated)',
+        help='Used if payment type is ACH.',
     )
     ach_verified_at = fields.Datetime(
         string='ACH Verified At',
-        groups='pms.group_pms_manager',
-        help='When ACH information was pre-noted (Restricted / Deprecated).',
+        help='When ACH information was pre-noted.',
     )
     payment_type = fields.Selection(
         [
@@ -117,8 +112,7 @@ class PmsOwner(models.Model):
             ('direct', 'Direct / ACH'),
         ],
         string='Payment Type',
-        groups='pms.group_pms_manager',
-        help='Payment type, used for ACH or Check payments. (Restricted / Deprecated)',
+        help='Payment type, used for ACH or Check payments.',
     )
 
     # ── Insurance (Deprecated) ──────────────────────────────────────────
