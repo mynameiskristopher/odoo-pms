@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Zone Types Views -->
+    <record id="view_pms_zone_type_list" model="ir.ui.view">
+        <field name="name">pms.zone.type.list</field>
+        <field name="model">pms.zone.type</field>
+        <field name="arch" type="xml">
+            <list string="Zone Types" editable="bottom">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="description"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_pms_zone_type_form" model="ir.ui.view">
+        <field name="name">pms.zone.type.form</field>
+        <field name="model">pms.zone.type</field>
+        <field name="arch" type="xml">
+            <form string="Zone Type">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="code"/>
+                        </group>
+                        <group>
+                            <field name="description"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_pms_zone_type" model="ir.actions.act_window">
+        <field name="name">Zone Types</field>
+        <field name="res_model">pms.zone.type</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Define your first Zone Type!
+            </p>
+            <p>
+                Zone Types let you categorize zones, e.g. "Region", "Building", "Floor".
+            </p>
+        </field>
+    </record>
+
+    <!-- Zones Views -->
+    <record id="view_pms_zone_list" model="ir.ui.view">
+        <field name="name">pms.zone.list</field>
+        <field name="model">pms.zone</field>
+        <field name="arch" type="xml">
+            <list string="Zones">
+                <field name="complete_name"/>
+                <field name="type_id"/>
+                <field name="parent_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_pms_zone_form" model="ir.ui.view">
+        <field name="name">pms.zone.form</field>
+        <field name="model">pms.zone</field>
+        <field name="arch" type="xml">
+            <form string="Zone">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name" placeholder="e.g. Floor 2 or Building A"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="type_id" options="{'no_open': True, 'no_quick_create': True}"/>
+                            <field name="parent_id" options="{'no_quick_create': True}"/>
+                        </group>
+                        <group>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Properties" name="properties">
+                            <field name="property_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="property_type"/>
+                                    <field name="max_occupancy"/>
+                                    <field name="list_price" string="Rent Price"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Sub-Zones" name="sub_zones">
+                            <field name="child_ids">
+                                <list>
+                                    <field name="complete_name"/>
+                                    <field name="type_id"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_pms_zone_search" model="ir.ui.view">
+        <field name="name">pms.zone.search</field>
+        <field name="model">pms.zone</field>
+        <field name="arch" type="xml">
+            <search string="Search Zones">
+                <field name="name"/>
+                <field name="type_id"/>
+                <field name="parent_id"/>
+                <group>
+                    <filter string="Zone Type" name="group_by_type" context="{'group_by': 'type_id'}"/>
+                    <filter string="Parent Zone" name="group_by_parent" context="{'group_by': 'parent_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_pms_zone" model="ir.actions.act_window">
+        <field name="name">Zones</field>
+        <field name="res_model">pms.zone</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_pms_zone_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Zone!
+            </p>
+            <p>
+                Manage hierarchical locations and taxonomies like Regions, Buildings, and Floors.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menus -->
+    <!-- Zones under Properties Category -->
+    <menuitem id="menu_pms_zone"
+              name="Zones"
+              parent="menu_pms_properties_cat"
+              action="action_pms_zone"
+              sequence="20"/>
+
+    <!-- Configuration Category -->
+    <menuitem id="menu_pms_config_cat"
+              name="Configuration"
+              parent="menu_pms_root"
+              sequence="100"/>
+
+    <!-- Zone Types under Configuration Category -->
+    <menuitem id="menu_pms_zone_type"
+              name="Zone Types"
+              parent="menu_pms_config_cat"
+              action="action_pms_zone_type"
+              sequence="10"/>
+
+</odoo>

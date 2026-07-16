@@ -35,6 +35,8 @@ The `pms.property` model maps directly to Schema.org's **`VacationRental`** clas
 | `numberOfBathroomsTotal` (half) | `half_bathrooms` | `Integer` | Number of half bathrooms (toilet, sink) |
 | `numberOfBedrooms` | `bedrooms` | `Integer` | Number of bedrooms |
 | `permitNo` | `municipality_id` | `Char` | Local municipality ID, license, or permit |
+| - | `zone_id` | `Many2one` | The taxonomical zone this property belongs to (references `pms.zone`) |
+
 
 
 ## Inheritance Design Decision: Delegation Inheritance (`_inherits`)
