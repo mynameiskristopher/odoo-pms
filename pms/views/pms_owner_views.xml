@@ -35,9 +35,9 @@
                 <field name="name"/>
                 <field name="owner_type"/>
                 <field name="active" widget="boolean_toggle"/>
-                <field name="locality"/>
-                <field name="region"/>
-                <field name="country"/>
+                <field name="city"/>
+                <field name="state_id"/>
+                <field name="country_id"/>
                 <field name="phone"/>
                 <field name="email"/>
                 <field name="current_balance" widget="monetary" options="{'currency_field': 'currency_id'}"/>
@@ -63,6 +63,12 @@
                                    widget="boolean_toggle"
                                    string="Active"/>
                         </button>
+                        <button name="action_open_partner"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-address-card">
+                            <span class="o_stat_text">Contact</span>
+                        </button>
                     </div>
                     <div class="oe_title">
                         <label for="name" class="oe_edit_only"/>
@@ -72,27 +78,27 @@
                     </div>
                     <group>
                         <group string="Identity">
+                            <field name="partner_id" invisible="1"/>
                             <field name="owner_type"/>
                             <field name="company_id" groups="base.group_multi_company"/>
                         </group>
                         <group string="Contact">
                             <field name="email" widget="email"/>
                             <field name="phone"/>
-                            <field name="fax"/>
                             <field name="website" widget="url"/>
                         </group>
                     </group>
                     <notebook>
-                        <!-- ── Primary Address ── -->
+                        <!-- ── Address (from partner) ── -->
                         <page string="Address" name="address">
                             <group>
                                 <group string="Business Address">
-                                    <field name="street_address" placeholder="Street Address"/>
-                                    <field name="extended_address" placeholder="Apt / Suite / Unit"/>
-                                    <field name="locality" placeholder="City"/>
-                                    <field name="region" placeholder="State / Region"/>
-                                    <field name="postal" placeholder="Postal / ZIP Code"/>
-                                    <field name="country" placeholder="US"/>
+                                    <field name="street" placeholder="Street Address"/>
+                                    <field name="street2" placeholder="Apt / Suite / Unit"/>
+                                    <field name="city" placeholder="City"/>
+                                    <field name="state_id" placeholder="State / Region"/>
+                                    <field name="zip" placeholder="Postal / ZIP Code"/>
+                                    <field name="country_id" placeholder="Country"/>
                                 </group>
                                 <group string="Tax Address">
                                     <field name="tax_street_address" placeholder="Street Address"/>
@@ -179,6 +185,19 @@
                             </field>
                         </page>
 
+                        <!-- ── Pipeline Leads ── -->
+                        <page string="Pipeline" name="pipeline">
+                            <field name="lead_ids">
+                                <list string="Owner Leads">
+                                    <field name="name"/>
+                                    <field name="stage_id"/>
+                                    <field name="user_id"/>
+                                    <field name="date_deadline"/>
+                                    <field name="expected_monthly_revenue" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                </list>
+                            </field>
+                        </page>
+
                         <!-- ── Notes ── -->
                         <page string="Notes" name="notes">
                             <group>
@@ -204,15 +223,16 @@
                 <field name="name"/>
                 <field name="email"/>
                 <field name="phone"/>
-                <field name="locality"/>
-                <field name="region"/>
-                <field name="country"/>
+                <field name="city"/>
+                <field name="state_id"/>
+                <field name="country_id"/>
                 <separator/>
                 <filter string="Active" name="active" domain="[('active', '=', True)]"/>
                 <filter string="Inactive" name="inactive" domain="[('active', '=', False)]"/>
                 <separator/>
+                <filter string="Owner Type" name="group_by_owner_type" context="{'group_by': 'owner_type'}"/>
                 <filter string="Tax Type" name="group_by_tax_type" context="{'group_by': 'tax_type'}"/>
-                <filter string="Country" name="group_by_country" context="{'group_by': 'country'}"/>
+                <filter string="Country" name="group_by_country" context="{'group_by': 'country_id'}"/>
             </search>
         </field>
     </record>

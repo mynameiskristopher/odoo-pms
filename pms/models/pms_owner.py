@@ -7,15 +7,49 @@ class PmsOwner(models.Model):
     _name = 'pms.owner'
     _description = 'Property Owner'
     _order = 'name'
-    _rec_name = 'name'
     _inherit = ['mail.thread']
+
+    # ── Contact Link ───────────────────────────────────────────────────
+    partner_id = fields.Many2one(
+        'res.partner',
+        string='Contact',
+        required=True,
+        ondelete='restrict',
+        tracking=True,
+        help='The Odoo contact record for this owner. '
+             'All contact details (name, email, phone, address) '
+             'are managed on the partner.',
+    )
+
+    # ── Related display fields (delegated to partner) ──────────────────
+    name = fields.Char(
+        related='partner_id.name',
+        store=True,
+        tracking=True,
+    )
+    email = fields.Char(
+        related='partner_id.email',
+    )
+    phone = fields.Char(
+        related='partner_id.phone',
+    )
+    website = fields.Char(
+        related='partner_id.website',
+    )
+    # Address fields from partner (read-only display on owner form)
+    street = fields.Char(related='partner_id.street')
+    street2 = fields.Char(related='partner_id.street2')
+    city = fields.Char(related='partner_id.city')
+    state_id = fields.Many2one(related='partner_id.state_id')
+    zip = fields.Char(related='partner_id.zip')
+    country_id = fields.Many2one(related='partner_id.country_id')
 
     # ── Identity ────────────────────────────────────────────────────────
     owner_type = fields.Selection(
-        [('owner', 'Owner')],
-        string='Type',
+        [('individual', 'Individual'), ('company', 'Company')],
+        string='Owner Type',
         required=True,
-        default='owner',
+        default='company',
         tracking=True,
     )
 
@@ -25,41 +59,7 @@ class PmsOwner(models.Model):
         help='Uncheck to archive this owner instead of deleting.',
     )
 
-    name = fields.Char(
-        string='Company Name',
-        required=True,
-        tracking=True,
-        help='Name of the owning company or individual.',
-    )
-
-    # ── Primary Address ─────────────────────────────────────────────────
-    street_address = fields.Char(
-        string='Street Address',
-        help='Street address of the company.',
-    )
-    extended_address = fields.Char(
-        string='Extended Address',
-        help='Extended address (apt, suite, etc.).',
-    )
-    locality = fields.Char(
-        string='City / Locality',
-        help='City or locality.',
-    )
-    region = fields.Char(
-        string='State / Region',
-        help='State or region.',
-    )
-    postal = fields.Char(
-        string='Postal Code',
-        help='Postal / ZIP code of the company.',
-    )
-    country = fields.Char(
-        string='Country',
-        size=2,
-        help='ISO 3166-1 alpha-2 country code (2 characters).',
-    )
-
-    # ── Tax / 1099 Information (Restricted) ──────────────────────────────
+    # ── Tax / 1099 Information ──────────────────────────────────────────
     tax_type = fields.Selection(
         [
             ('rents', 'Rents'),
@@ -69,7 +69,7 @@ class PmsOwner(models.Model):
         ],
         string='1099 Income Classification',
         tracking=True,
-        help='1099 Income classification (Restricted).',
+        help='1099 Income classification.',
     )
     tax_name = fields.Char(
         string='1099 Tax Payee Name',
@@ -82,7 +82,7 @@ class PmsOwner(models.Model):
         help='1099 Tax ID.',
     )
 
-    # ── ACH / Payment Information (Restricted) ──────────────────────────
+    # ── ACH / Payment Information ───────────────────────────────────────
     ach_account_number = fields.Char(
         string='ACH Account Number',
         help='ACH Account Number.',
@@ -156,23 +156,9 @@ class PmsOwner(models.Model):
         help='Allow vendor/owner to approve assigned work orders.',
     )
 
-    # ── Contact Details ─────────────────────────────────────────────────
+    # ── Notes ───────────────────────────────────────────────────────────
     notes = fields.Html(
         string='Notes',
-    )
-    website = fields.Char(
-        string='Website',
-    )
-    email = fields.Char(
-        string='Email',
-    )
-    fax = fields.Char(
-        string='Fax',
-        help='Use E.164 format. Non-compliant numbers processed within US locale.',
-    )
-    phone = fields.Char(
-        string='Phone',
-        help='Use E.164 format. Non-compliant numbers processed within US locale.',
     )
 
     # ── Tags ────────────────────────────────────────────────────────────
@@ -191,7 +177,6 @@ class PmsOwner(models.Model):
     )
     tax_extended_address = fields.Char(
         string='Tax Extended Address',
-        required=True,
     )
     tax_locality = fields.Char(
         string='Tax City / Locality',
@@ -213,7 +198,6 @@ class PmsOwner(models.Model):
     )
     tax_phone = fields.Char(
         string='Tax Phone',
-        required=True,
     )
 
     # ── Financial / Administrative ──────────────────────────────────────
@@ -255,6 +239,11 @@ class PmsOwner(models.Model):
         'owner_id',
         string='Unit Ownership',
     )
+    lead_ids = fields.One2many(
+        'pms.owner.lead',
+        'owner_id',
+        string='Owner Leads',
+    )
 
     # ── Currency (for monetary widget) ─────────────────────────────────
     currency_id = fields.Many2one(
@@ -268,6 +257,52 @@ class PmsOwner(models.Model):
         for rec in self:
             rec.currency_id = rec.company_id.currency_id or self.env.company.currency_id
 
+    # ── ORM Methods ────────────────────────────────────────────────────
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Auto-create a res.partner for each owner if not provided."""
+        Partner = self.env['res.partner']
+        # Find or create the "Owner" partner category
+        category = self.env.ref('pms.partner_category_owner', raise_if_not_found=False)
+        for vals in vals_list:
+            if not vals.get('partner_id'):
+                # Pop related fields that should go on the partner instead
+                partner_vals = {}
+                for fld in ('name', 'email', 'phone', 'website',
+                            'street', 'street2', 'city', 'zip'):
+                    if vals.get(fld):
+                        partner_vals[fld] = vals.pop(fld)
+                # Ensure a name
+                partner_vals.setdefault('name', 'New Owner')
+                # Set company type based on owner_type
+                owner_type = vals.get('owner_type', 'company')
+                partner_vals['is_company'] = owner_type == 'company'
+                partner = Partner.create(partner_vals)
+                # Tag with Owner category
+                if category:
+                    partner.category_id = [(4, category.id)]
+                vals['partner_id'] = partner.id
+        return super().create(vals_list)
+
+    def write(self, vals):
+        """Sync owner_type to partner is_company when changed."""
+        if 'owner_type' in vals:
+            for rec in self:
+                if rec.partner_id:
+                    rec.partner_id.is_company = vals['owner_type'] == 'company'
+        return super().write(vals)
+
+    def action_open_partner(self):
+        """Smart button to open the linked contact."""
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'res.partner',
+            'res_id': self.partner_id.id,
+            'view_mode': 'form',
+            'target': 'current',
+        }
+
     # ── Constraints ────────────────────────────────────────────────────
     @api.constrains('travel_agent_commission')
     def _check_travel_agent_commission(self):
@@ -280,12 +315,6 @@ class PmsOwner(models.Model):
         for rec in self:
             if rec.ach_routing_number and len(rec.ach_routing_number) != 9:
                 raise ValidationError(_('ACH Routing Number must be exactly 9 digits.'))
-
-    @api.constrains('country')
-    def _check_country(self):
-        for rec in self:
-            if rec.country and len(rec.country) != 2:
-                raise ValidationError(_('Country must be a 2-character ISO code.'))
 
     @api.constrains('tax_country')
     def _check_tax_country(self):

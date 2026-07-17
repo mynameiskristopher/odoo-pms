@@ -14,3 +14,6 @@ access_pms_owner_agreement_user,access.pms.owner.agreement.user,model_pms_owner_
 access_pms_reservation_charge_user,access.pms.reservation.charge.user,model_pms_reservation_charge,base.group_user,1,1,1,1
 access_pms_owner_settlement_user,access.pms.owner.settlement.user,model_pms_owner_settlement,base.group_user,1,1,1,1
 access_pms_owner_settlement_line_user,access.pms.owner.settlement.line.user,model_pms_owner_settlement_line,base.group_user,1,1,1,1
+access_pms_owner_lead_user,access.pms.owner.lead.user,model_pms_owner_lead,base.group_user,1,1,1,1
+access_pms_owner_lead_stage_user,access.pms.owner.lead.stage.user,model_pms_owner_lead_stage,base.group_user,1,1,1,1
+access_pms_owner_lead_tag_user,access.pms.owner.lead.tag.user,model_pms_owner_lead_tag,base.group_user,1,1,1,1

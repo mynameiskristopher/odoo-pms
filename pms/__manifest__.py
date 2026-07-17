@@ -21,10 +21,12 @@ seamlessly with Odoo's product templates.
     ],
     'data': [
         'security/ir.model.access.csv',
+        'security/pms_orm_data.xml',
         'views/pms_property_views.xml',
         'views/pms_zone_views.xml',
         'views/pms_booking_views.xml',
         'views/pms_owner_views.xml',
+        'views/pms_owner_lead_views.xml',
         'views/pms_unit_owner_views.xml',
         'views/pms_charge_type_views.xml',
         'views/pms_revenue_policy_views.xml',
